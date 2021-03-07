@@ -75,6 +75,14 @@ app.post('/register', async (req, res) => {
 
 })
 
+app.get('/', (req, res) => { 
+  
+    // Sending the response 
+    res.send('Hello Dear User I am Hear!') 
+     
+    // Ending the response  
+    res.end() 
+}) 
 
 /* Create -login POST method */
 app.post('/login', async (req, res) => {
