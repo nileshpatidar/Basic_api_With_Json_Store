@@ -2,7 +2,8 @@ const express = require('express');
 const app = express(); 
 const { getUserData, saveUserData } = require("./commonFumction/common");
 const Authchecker = require("./commonFumction/middelware");
- 
+ app.use(bodyParser.json());
+
 let jwt = require('jsonwebtoken');
 var md5 = require('md5')
 var multer = require('multer')
