@@ -1,5 +1,7 @@
 const express = require('express'); 
 const app = express(); 
+const { getUserData, saveUserData } = require("./commonFumction/common");
+const Authchecker = require("./commonFumction/middelware");
   
 
 app.get('/', (req, res) => {
@@ -10,6 +12,7 @@ app.get('/', (req, res) => {
 res.end();
 })
   
+
 // Establishing the port  
 const PORT = process.env.PORT ||5000; 
   
