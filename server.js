@@ -18,16 +18,12 @@ var mkdirp = require('mkdirp');
 mkdirp('uploads/profile/');
 let SECRET_KEY = "nileshsecretkey1234567890"
  
-
-
-
-
 var localstorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/profile/')
     },
     filename: function (req, file, cb) {
-         cb(null, file.fieldname + '_' + Date.now() + '_' + file.originalname)
+         cb(null, file.fieldname + '_' + Date.now())
          }
 })
 
