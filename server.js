@@ -1,6 +1,7 @@
 const express = require('express'); 
 const cors = require('cors'); 
 const app = express(); 
+var bodyParser = require("body-parser");
 const { getUserData, saveUserData } = require("./commonFumction/common");
 const Authchecker = require("./commonFumction/middelware");
 app.use(cors());
