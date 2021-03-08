@@ -1,15 +1,14 @@
 const express = require('express'); 
 const app = express(); 
   
-// Getting Request 
-app.get('/', (req, res) => { 
-  
+
+app.get('/', (req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    res.send('<h1>Hello Dear User I am Hear!</h1>');
     // Sending the response 
-    res.send('Hello World!') 
-     
-    // Ending the response  
-    res.end() 
-}) 
+res.end();
+})
   
 // Establishing the port  
 const PORT = process.env.PORT ||5000; 
