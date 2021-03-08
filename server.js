@@ -86,6 +86,75 @@ app.post('/register', async (req, res) => {
 
 })
 
+/* Create -login POST method */
+app.post('/login', async (req, res) => {
+    //get the existing user data from json
+    const existUsers = await getUserData()
+    //get the new from post request
+    const userData = req.body
+    // fname / lname / email / mobile / password / profile photo / address / city / state / country)
+    if (userData.email == null || userData.password == null) {
+        return res.status(401).send({ error: true, msg: 'Email and Password Required' })
+    }
+
+    //check not exist  
+    const findExist = existUsers.find(user => user.email === userData.email)
+    if (!findExist) {
+        return res.status(404).send({ error: true, msg: 'User Not Exist' })
+    }
+    if (findExist.password != md5(userData.password)) {
+        return res.status(403).send({ error: true, msg: 'Email or Password is not Match' })
+    }
+    delete findExist.password;
+    var date = new Date();
+    var timestamp = date.getTime();
+    let secret_key = jwt.sign({ auth: userData.email + timestamp }, SECRET_KEY, { expiresIn: '1h' });
+    findExist.token = secret_key;
+
+    res.send({ success: true, data: findExist, msg: 'User  added successfully' })
+
+})
+
+
+/* Read - GET method */
+app.get('/user/list', Authchecker, async (req, res) => {
+    const users = await getUserData()
+    res.send(users)
+})
+
+/* Update - Patch method */
+app.patch('/user/edit/:email', Authchecker, async (req, res) => {
+    //get the username from url
+    const email = req.params.email
+
+    //get the update data
+    const userData = req.body
+
+    //get the existing user data
+    const existUsers = await getUserData()
+
+    //check if the username exist or not       
+    const findExist = existUsers.find(user => user.email === email)
+    if (!findExist) {
+        return res.status(409).send({ error: true, msg: 'user not exist' })
+    }
+
+    //filter the userdata
+    const updateUser = existUsers.filter(user => user.email !== email)
+
+
+    for (const [key, value] of Object.entries(findExist)) {
+        findExist[key] = userData[key] ? userData[key] : value;
+    }
+    //push the updated data
+    updateUser.push(findExist)
+
+    //finally save it
+    saveUserData(updateUser)
+
+    res.send({ success: true, msg: 'User data updated successfully' })
+})
+
 
 
 // Establishing the port  
