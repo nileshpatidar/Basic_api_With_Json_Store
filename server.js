@@ -35,7 +35,7 @@ const fileFilter = (req, file, cb) => {
 var local_upload = multer({
     storage: localstorage,
     fileFilter: fileFilter,
-}).single('profile_image')
+}).single('profile_image');
 
 
 app.get('/', (req, res) => {
@@ -46,6 +46,47 @@ app.get('/', (req, res) => {
 res.end();
 })
   
+/* Create - register POST method */
+app.post('/register', async (req, res) => {
+    //get the new from post request
+
+    var userData;
+    await local_upload(req, res, async function (err) {
+        userData = JSON.parse(req.body.data);
+        if (err) {
+            return res.end(err, "Something went wrong!");
+        }
+        //get the existing user data from json
+        const existUsers = await getUserData();
+
+        userData.profile_image = req.file ? req.file.path : '';
+        // fname / lname / email / mobile / password / profile photo / address / city / state / country)
+        if (userData.fname == null || userData.lname == null || userData.email == null || userData.country == null ||
+            userData.state == null || userData.city == null || userData.address == null || userData.mobile == null || userData.password == null) {
+            return res.status(401).send({ error: true, msg: 'User data missing' })
+        }
+
+        userData.password = md5(userData.password);
+        console.log(existUsers);
+
+        //check  exist already
+        const findExist = existUsers.find(user => user.email === userData.email)
+        if (findExist) {
+            return res.status(409).send({ error: true, msg: 'user already exist' })
+        }
+
+        //append the user data
+        existUsers.push(userData)
+
+        //save the new user data
+        saveUserData(existUsers);
+        res.send({ success: true, msg: 'User  added successfully' })
+
+    });
+
+})
+
+
 
 // Establishing the port  
 const PORT = process.env.PORT ||5000; 
