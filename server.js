@@ -1,35 +1,30 @@
-const express = require('express');
-const cors = require('cors');
-const app = express();
+const express = require('express'); 
+const cors = require('cors'); 
+const app = express(); 
 var bodyParser = require("body-parser");
+const { getUserData, saveUserData } = require("./commonFumction/common");
+const Authchecker = require("./commonFumction/middelware");
 app.use(cors());
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 let jwt = require('jsonwebtoken');
 var md5 = require('md5')
 var multer = require('multer')
 var mkdirp = require('mkdirp');
 mkdirp('uploads/profile/');
 let SECRET_KEY = "nileshsecretkey1234567890"
-
-
-app.get('/', (req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/html');
-    res.end('<h1>Hello Dear User I am Hear!</h1>');
-    // Sending the response 
-})
-
-const { getUserData, saveUserData } = require("./commonFumction/common");
-const Authchecker = require("./commonFumction/middelware");
+ 
 
 var localstorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/profile/')
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '_' + Date.now())
-        //  file.mimetype.split('/')[1])
+        cb(null, file.fieldname + '_' + Date.now()+'_'+ file.originalname)
     }
 })
 
@@ -41,14 +36,25 @@ const fileFilter = (req, file, cb) => {
     }
 }
 
+
 var local_upload = multer({
     storage: localstorage,
     fileFilter: fileFilter,
-}).single('profile_image')
+}).single('profile_image');
 
+
+app.get('/', (req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    res.send('<h1>Hello Dear User I am Hear!</h1>');
+    // Sending the response 
+res.end();
+})
+  
 /* Create - register POST method */
 app.post('/register', async (req, res) => {
     //get the new from post request
+
     var userData;
     await local_upload(req, res, async function (err) {
         userData = JSON.parse(req.body.data);
@@ -57,6 +63,7 @@ app.post('/register', async (req, res) => {
         }
         //get the existing user data from json
         const existUsers = await getUserData();
+
         userData.profile_image = req.file ? req.file.path : '';
         // fname / lname / email / mobile / password / profile photo / address / city / state / country)
         if (userData.fname == null || userData.lname == null || userData.email == null || userData.country == null ||
@@ -65,6 +72,8 @@ app.post('/register', async (req, res) => {
         }
 
         userData.password = md5(userData.password);
+        console.log(existUsers);
+
         //check  exist already
         const findExist = existUsers.find(user => user.email === userData.email)
         if (findExist) {
@@ -82,14 +91,14 @@ app.post('/register', async (req, res) => {
 
 })
 
-
-// /* Create -login POST method */
+/* Create -login POST method */
 app.post('/login', async (req, res) => {
     //get the existing user data from json
     const existUsers = await getUserData()
     //get the new from post request
-    const userData = req.body;
-    if (userData.email === null || userData.password === null) {
+    const userData = req.body
+    // fname / lname / email / mobile / password / profile photo / address / city / state / country)
+    if (userData.email == null || userData.password == null) {
         return res.status(401).send({ error: true, msg: 'Email and Password Required' })
     }
 
@@ -151,7 +160,11 @@ app.patch('/user/edit/:email', Authchecker, async (req, res) => {
     res.send({ success: true, msg: 'User data updated successfully' })
 })
 
-//configure the server port
-app.listen(3000, () => {
-    console.log('Server runs on port 3000')
-})
+
+
+// Establishing the port  
+const PORT = process.env.PORT ||5000; 
+  
+// Executing the sever on given port number 
+app.listen(PORT, console.log( 
+  `Server started on port ${PORT}`)); 
