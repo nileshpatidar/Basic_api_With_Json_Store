@@ -3,11 +3,12 @@ const app = express()
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-let jwt = require('jsonwebtoken');
-var md5 = require('md5')
-var multer = require('multer')
-var mkdirp = require('mkdirp');
-mkdirp('uploads/profile/'); let SECRET_KEY = "nileshsecretkey1234567890"
+// let jwt = require('jsonwebtoken');
+// var md5 = require('md5')
+// var multer = require('multer')
+// var mkdirp = require('mkdirp');
+// mkdirp('uploads/profile/');
+// let SECRET_KEY = "nileshsecretkey1234567890"
 
 app.get('/', (req, res) => {
     res.statusCode = 200;
