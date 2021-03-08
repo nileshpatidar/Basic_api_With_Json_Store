@@ -12,13 +12,17 @@ let SECRET_KEY = "nileshsecretkey1234567890"
 const { getUserData, saveUserData } = require("./commonFumction/common");
 const Authchecker = require("./commonFumction/middelware");
 
+var bodyParser = require("body-parser");
+
 var md5 = require('md5')
 var multer = require('multer')
 var mkdirp = require('mkdirp');
 mkdirp('uploads/profile/');
 
-const app = express()
-app.use(express.json())
+const app = express() 
+
+app.use(bodyParser.json());
+
 
 
 var localstorage = multer.diskStorage({
