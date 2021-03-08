@@ -6,6 +6,7 @@ const { getUserData, saveUserData } = require("./commonFumction/common");
 const Authchecker = require("./commonFumction/middelware");
 app.use(cors());
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
