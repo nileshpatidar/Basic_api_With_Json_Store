@@ -83,15 +83,12 @@ app.post('/register', async (req, res) => {
 
 })
 
-app.get('/', (req, res) => {
-
+ app.get('/', (req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/html');
+    res.end('<h1>Hello Dear User I am Hear!</h1>');
     // Sending the response 
-    res.send('Hello Dear User I am Hear!')
-
-    // Ending the response  
-    res.end()
 })
-
 /* Create -login POST method */
 app.post('/login', async (req, res) => {
     //get the existing user data from json
