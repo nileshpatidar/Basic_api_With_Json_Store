@@ -1,8 +1,13 @@
 const express = require('express'); 
+const cors = require('cors'); 
 const app = express(); 
 const { getUserData, saveUserData } = require("./commonFumction/common");
 const Authchecker = require("./commonFumction/middelware");
- app.use(bodyParser.json());
+app.use(cors());
+
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 let jwt = require('jsonwebtoken');
 var md5 = require('md5')
